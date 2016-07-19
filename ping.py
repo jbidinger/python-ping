@@ -194,6 +194,17 @@ def do_one(dest_addr, timeout):
     my_socket.close()
     return delay
 
+def test_host(dest_addr, timeout=2):
+    try:
+        delay  =  do_one(dest_addr, timeout)
+    except socket.gaierror, e:
+        return -1
+
+    if delay  ==  None:
+        return -2
+    else:
+        delay  =  delay * 1000
+        return delay
 
 def verbose_ping(dest_addr, timeout = 2, count = 4):
     """
@@ -217,7 +228,13 @@ def verbose_ping(dest_addr, timeout = 2, count = 4):
 
 
 if __name__ == '__main__':
-    verbose_ping("heise.de")
-    verbose_ping("google.com")
-    verbose_ping("a-test-url-taht-is-not-available.com")
-    verbose_ping("192.168.1.1")
+    for i in range(1,254):
+        h = "192.168.26.%s" % i
+        result = test_host(h,2)
+        print("%s\t" % h),
+        if result == -1:
+            print "error"
+        elif result == -2:
+            print "timeout"
+        else:
+            print "alive"
